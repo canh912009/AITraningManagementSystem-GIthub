@@ -1,29 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     output: 'standalone',
-    typescript: {
-        ignoreBuildErrors: true,
-    },
-    eslint: {
-        ignoreDuringBuilds: true,
-    },
     experimental: {
-        serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs'],
+        serverComponentsExternalPackages: ["prisma"]
     },
-    // Tắt static optimization
-    generateStaticParams: false,
-    images: {
-        domains: ['localhost'],
-    },
-    webpack: (config) => {
-        config.resolve.fallback = {
-            ...config.resolve.fallback,
-            fs: false,
-            net: false,
-            tls: false,
-        };
-        return config;
-    },
+    webpack: (config, { isServer }) => {
+        if (isServer) {
+            config.plugins.push()
+        }
+        return config
+    }
 }
 
 module.exports = nextConfig
