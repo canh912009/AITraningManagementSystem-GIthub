@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Cài đặt dependencies
-RUN npm ci --only=production
+RUN npm ci
 
 # Build source code chỉ khi cần thiết
 FROM base AS builder
