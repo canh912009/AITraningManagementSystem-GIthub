@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  nextjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-training-nextjs
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=mysql://ai_user:ai_password@mariadb:3306/ai_training_db
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - UPLOAD_DIR=${UPLOAD_DIR}
+    depends_on:
+      - mariadb
+    volumes:
+      - ${UPLOAD_DIR}:/app/uploads
+      - ./src:/app/src
+      - ./public:/app/public
+    networks:
+      - ai-training-network
+    restart: unless-stopped  # Tự động restart trừ khi bị stop thủ công
+
+  mariadb:
+    image: mariadb:11.2
+    container_name: ai-training-mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=ai_training_db
+      - MYSQL_USER=ai_user
+      - MYSQL_PASSWORD=ai_password
+    ports:
+      - "3308:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ai-training-network
+    restart: unless-stopped  # Tự động restart trừ khi bị stop thủ công
+
+volumes:
+  mariadb_data:
+
+networks:
+  ai-training-network:
+    driver: bridge

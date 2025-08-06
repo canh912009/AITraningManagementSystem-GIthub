@@ -1,0 +1,835 @@
+{
+	"info": {
+		"_postman_id": "502e1689-1aa0-454a-a9d5-5f1d2acf6c38",
+		"name": "STB AI Training System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "59897",
+		"_collection_link": "https://tendote.postman.co/workspace/%5BWork%5D~45bc9e8e-74f2-4d9c-8737-fa556ba9ae6f/collection/59897-502e1689-1aa0-454a-a9d5-5f1d2acf6c38?action=share&source=collection_link&creator=59897"
+	},
+	"item": [
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "{{stb-ai-training-url}}/api/admin/dashboard",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{stb-ai-training-url}}/api/admin/dashboard",
+							"host": [
+								"{{stb-ai-training-url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"dashboard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{stb-ai-training-url}}/api/admin/training-files",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{stb-ai-training-url}}/api/admin/training-files?page=1&limit=10&status=",
+							"host": [
+								"{{stb-ai-training-url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"training-files"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "{{stb-ai-training-url}}/api/auth/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Postman Test Script cho API /auth/login\r",
+							"// Paste script này vào tab \"Tests\" của request /api/auth/login\r",
+							"\r",
+							"// Parse response\r",
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"// Test response status\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has success field\", function () {\r",
+							"    pm.expect(responseJson).to.have.property('success');\r",
+							"});\r",
+							"\r",
+							"// Nếu login thành công, lưu token\r",
+							"if (responseJson.success && responseJson.data && responseJson.data.token) {\r",
+							"    \r",
+							"    // Chỉ lưu JWT token với prefix STB_AI_\r",
+							"    pm.environment.set(\"STB_AI_JWT_TOKEN\", responseJson.data.token);\r",
+							"    \r",
+							"    console.log(\"✅ [STB AI] Login successful!\");\r",
+							"    console.log(\"📱 User:\", responseJson.data.user.phone);\r",
+							"    console.log(\"🔑 Token saved to STB_AI_JWT_TOKEN\");\r",
+							"    console.log(\"👑 Admin:\", responseJson.data.user.isAdmin ? \"Yes\" : \"No\");\r",
+							"    \r",
+							"    pm.test(\"STB AI Token saved successfully\", function () {\r",
+							"        pm.expect(pm.environment.get(\"STB_AI_JWT_TOKEN\")).to.not.be.undefined;\r",
+							"    });\r",
+							"    \r",
+							"} else {\r",
+							"    // Login failed\r",
+							"    console.log(\"❌ [STB AI] Login failed:\");\r",
+							"    console.log(\"Error:\", responseJson.error || \"Unknown error\");\r",
+							"    \r",
+							"    // Clear token nếu login fail\r",
+							"    pm.environment.unset(\"STB_AI_JWT_TOKEN\");\r",
+							"    \r",
+							"    pm.test(\"Login failed - check credentials\", function () {\r",
+							"        pm.expect(responseJson.success).to.be.true;\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// Additional tests\r",
+							"pm.test(\"Response format is correct\", function () {\r",
+							"    pm.expect(responseJson).to.have.property('success');\r",
+							"    pm.expect(responseJson).to.have.property('data');\r",
+							"    pm.expect(responseJson).to.have.property('message');\r",
+							"    pm.expect(responseJson).to.have.property('error');\r",
+							"});\r",
+							"\r",
+							"if (responseJson.success) {\r",
+							"    pm.test(\"Login data contains required fields\", function () {\r",
+							"        pm.expect(responseJson.data).to.have.property('user');\r",
+							"        pm.expect(responseJson.data).to.have.property('token');\r",
+							"        pm.expect(responseJson.data.user).to.have.property('id');\r",
+							"        pm.expect(responseJson.data.user).to.have.property('phone');\r",
+							"        pm.expect(responseJson.data.user).to.have.property('isAdmin');\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"phone\": \"0123456789\",\r\n    \"password\": \"admin123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stb-ai-training-url}}/api/auth/login",
+					"host": [
+						"{{stb-ai-training-url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "{{stb-ai-training-url}}/api/auth/login admin",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone\": \"0123456789\",\r\n    \"password\": \"admin123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{stb-ai-training-url}}/api/auth/login",
+							"host": [
+								"{{stb-ai-training-url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "vary",
+							"value": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 18 Jul 2025 02:21:49 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": {\n        \"user\": {\n            \"id\": 1,\n            \"phone\": \"0123456789\",\n            \"isAdmin\": true,\n            \"age\": null,\n            \"gender\": null,\n            \"region\": null,\n            \"createdAt\": \"2025-07-17T11:17:51.000Z\",\n            \"updatedAt\": \"2025-07-17T11:17:51.000Z\"\n        },\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInBob25lIjoiMDEyMzQ1Njc4OSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTc1MjgwNTMwOSwiZXhwIjoxNzUzNDEwMTA5fQ.PgH-QWeinsnZtpmw70niJFY0N2DTR4UPriqrkOM2D8k\"\n    },\n    \"message\": \"Đăng nhập thành công\",\n    \"error\": null\n}"
+				},
+				{
+					"name": "{{stb-ai-training-url}}/api/auth/login 0987654321",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone\": \"0987654321\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{stb-ai-training-url}}/api/auth/login",
+							"host": [
+								"{{stb-ai-training-url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "vary",
+							"value": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 18 Jul 2025 08:14:05 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": {\n        \"user\": {\n            \"id\": 2,\n            \"phone\": \"0987654321\",\n            \"isAdmin\": false,\n            \"age\": 25,\n            \"gender\": \"male\",\n            \"region\": \"bac\",\n            \"createdAt\": \"2025-07-17T11:17:51.000Z\",\n            \"updatedAt\": \"2025-07-17T11:17:51.000Z\"\n        },\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInBob25lIjoiMDk4NzY1NDMyMSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3NTI4MjY0NDUsImV4cCI6MTc1MzQzMTI0NX0.rbo5JA5KM30RmkYAhAkR9zDPpVpD1Iby49UiYUyBtHs\"\n    },\n    \"message\": \"Đăng nhập thành công\",\n    \"error\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "{{stb-ai-training-url}}/api/auth/register",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phone\": \"0987654322\",\r\n  \"password\": \"123456\",\r\n  \"age\": 25,\r\n  \"gender\": \"MALE\",\r\n  \"region\": \"BAC\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stb-ai-training-url}}/api/auth/register",
+					"host": [
+						"{{stb-ai-training-url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "{{stb-ai-training-url}}/api/auth/register true",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"phone\": \"0987654322\",\r\n  \"password\": \"123456\",\r\n  \"age\": 25,\r\n  \"gender\": \"MALE\",\r\n  \"region\": \"BAC\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{stb-ai-training-url}}/api/auth/register",
+							"host": [
+								"{{stb-ai-training-url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "vary",
+							"value": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 18 Jul 2025 02:27:05 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 5,\n        \"phone\": \"0987654322\",\n        \"isAdmin\": false,\n        \"age\": 25,\n        \"gender\": \"MALE\",\n        \"region\": \"BAC\",\n        \"createdAt\": \"2025-07-18T02:27:05.524Z\",\n        \"updatedAt\": \"2025-07-18T02:27:05.524Z\"\n    },\n    \"message\": \"Đăng ký thành công\",\n    \"error\": null\n}"
+				},
+				{
+					"name": "{{stb-ai-training-url}}/api/auth/register false",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"phone\": \"0987654321\",\r\n  \"password\": \"123456\",\r\n  \"age\": 25,\r\n  \"gender\": \"MALE\",\r\n  \"region\": \"BAC\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{stb-ai-training-url}}/api/auth/register",
+							"host": [
+								"{{stb-ai-training-url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "vary",
+							"value": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 18 Jul 2025 02:26:46 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": false,\n    \"data\": null,\n    \"message\": null,\n    \"error\": \"Số điện thoại đã được sử dụng\"\n}"
+				}
+			]
+		},
+		{
+			"name": "{{stb-ai-training-url}}/api/user/profile",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{stb-ai-training-url}}/api/user/profile",
+					"host": [
+						"{{stb-ai-training-url}}"
+					],
+					"path": [
+						"api",
+						"user",
+						"profile"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "{{stb-ai-training-url}}/api/user/profile admin",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{stb-ai-training-url}}/api/user/profile",
+							"host": [
+								"{{stb-ai-training-url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "vary",
+							"value": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 18 Jul 2025 02:41:37 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 1,\n        \"phone\": \"0123456789\",\n        \"isAdmin\": true,\n        \"age\": null,\n        \"gender\": null,\n        \"region\": null,\n        \"createdAt\": \"2025-07-17T11:17:51.000Z\",\n        \"updatedAt\": \"2025-07-17T11:17:51.000Z\"\n    },\n    \"message\": \"Lấy thông tin thành công\",\n    \"error\": null\n}"
+				},
+				{
+					"name": "{{stb-ai-training-url}}/api/user/profile 0987654322",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{stb-ai-training-url}}/api/user/profile",
+							"host": [
+								"{{stb-ai-training-url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "vary",
+							"value": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 18 Jul 2025 02:42:34 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 5,\n        \"phone\": \"0987654322\",\n        \"isAdmin\": false,\n        \"age\": 25,\n        \"gender\": \"MALE\",\n        \"region\": \"BAC\",\n        \"createdAt\": \"2025-07-18T02:27:05.524Z\",\n        \"updatedAt\": \"2025-07-18T02:27:05.524Z\"\n    },\n    \"message\": \"Lấy thông tin thành công\",\n    \"error\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "{{stb-ai-training-url}}/api/training/my-files",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{stb-ai-training-url}}/api/training/my-files?page=1&limit=10&status=PENDING",
+					"host": [
+						"{{stb-ai-training-url}}"
+					],
+					"path": [
+						"api",
+						"training",
+						"my-files"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "status",
+							"value": "PENDING"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{stb-ai-training-url}}/api/training/upload",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/E:/Temp/The_Boarded_Window_-_By_Ambrose_Bierce.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{stb-ai-training-url}}/api/training/upload",
+					"host": [
+						"{{stb-ai-training-url}}"
+					],
+					"path": [
+						"api",
+						"training",
+						"upload"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "{{stb-ai-training-url}}/api/training/upload",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/Temp/The_Boarded_Window_-_By_Ambrose_Bierce.mp3"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{stb-ai-training-url}}/api/training/upload",
+							"host": [
+								"{{stb-ai-training-url}}"
+							],
+							"path": [
+								"api",
+								"training",
+								"upload"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "vary",
+							"value": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 18 Jul 2025 02:48:36 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 1,\n        \"userId\": 5,\n        \"filePath\": \"5\\\\5_1752806916021_The_Boarded_Window_-_By_Ambrose_Bierce.mp3\",\n        \"contentVietnamese\": null,\n        \"contentKorean\": null,\n        \"trainingStatus\": \"PENDING\",\n        \"createdAt\": \"2025-07-18T02:48:36.033Z\",\n        \"updatedAt\": \"2025-07-18T02:48:36.033Z\",\n        \"user\": {\n            \"id\": 5,\n            \"phone\": \"0987654322\",\n            \"age\": 25,\n            \"gender\": \"MALE\",\n            \"region\": \"BAC\"\n        }\n    },\n    \"message\": \"Upload file thành công\",\n    \"error\": null\n}"
+				},
+				{
+					"name": "{{stb-ai-training-url}}/api/training/upload",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/Temp/the-boarded-window-by-ambrose-bierce_IRLolM5y.mp3"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{stb-ai-training-url}}/api/training/upload",
+							"host": [
+								"{{stb-ai-training-url}}"
+							],
+							"path": [
+								"api",
+								"training",
+								"upload"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "vary",
+							"value": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 18 Jul 2025 08:17:02 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 3,\n        \"userId\": 2,\n        \"filePath\": \"2/2_1752826621993_the-boarded-window-by-ambrose-bierce_IRLolM5y.mp3\",\n        \"contentVietnamese\": null,\n        \"contentKorean\": null,\n        \"trainingStatus\": \"pending\",\n        \"createdAt\": \"2025-07-18T08:17:02.000Z\",\n        \"updatedAt\": \"2025-07-18T08:17:02.000Z\",\n        \"user\": {\n            \"id\": 2,\n            \"phone\": \"0987654321\",\n            \"age\": 25,\n            \"gender\": \"male\",\n            \"region\": \"bac\"\n        }\n    },\n    \"message\": \"Upload file thành công\",\n    \"error\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "{{stb-ai-training-url}}api/uploads/5/5_1752806916021_The_Boarded_Window_-_By_Ambrose_Bierce.mp3",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{stb-ai-training-url}}/api/uploads/5/5_1752806916021_The_Boarded_Window_-_By_Ambrose_Bierce.mp3",
+					"host": [
+						"{{stb-ai-training-url}}"
+					],
+					"path": [
+						"api",
+						"uploads",
+						"5",
+						"5_1752806916021_The_Boarded_Window_-_By_Ambrose_Bierce.mp3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{stb-ai-training-url}}/api/uploads/1/1_1752820000674_The_Boarded_Window_-_By_Ambrose_Bierce.mp3",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{stb-ai-training-url}}/api/uploads/1/1_1752820000674_The_Boarded_Window_-_By_Ambrose_Bierce.mp3",
+					"host": [
+						"{{stb-ai-training-url}}"
+					],
+					"path": [
+						"api",
+						"uploads",
+						"1",
+						"1_1752820000674_The_Boarded_Window_-_By_Ambrose_Bierce.mp3"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"// Pre-request Script cho các API cần authentication\r",
+					"// Paste script này vào tab \"Pre-request Script\" của collection hoặc các request cần token\r",
+					"\r",
+					"// Chỉ cần lấy token từ environment\r",
+					"const token = pm.environment.get(\"STB_AI_JWT_TOKEN\");\r",
+					"\r",
+					"// Kiểm tra token có tồn tại không\r",
+					"if (!token) {\r",
+					"    console.log(\"❌ [STB AI] No JWT token found!\");\r",
+					"    console.log(\"💡 Please login first using /api/auth/login\");\r",
+					"} else {\r",
+					"    // Set Authorization header\r",
+					"    pm.request.headers.add({\r",
+					"        key: 'Authorization',\r",
+					"        value: `Bearer ${token}`\r",
+					"    });\r",
+					"    \r",
+					"    console.log(\"✅ [STB AI] Authorization header set\");\r",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
