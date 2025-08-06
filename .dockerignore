@@ -1,0 +1,65 @@
+# Dependencies
+node_modules
+npm-debug.log*
+.npm
+
+# Next.js
+.next
+out
+build
+dist
+
+# Environment
+.env*
+!.env.example
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Logs
+logs
+*.log
+
+# Coverage
+coverage
+
+# Cache
+.cache
+.parcel-cache
+
+# Temporary
+.tmp
+.temp
+
+# Database
+*.db
+*.sqlite
+
+# Large media files (if any)
+*.mp4
+*.mov
+*.avi
+uploads/
+public/uploads/
+
+# Development only
+src/**/*.test.*
+src/**/*.spec.*
+__tests__
+jest.config.*
